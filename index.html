@@ -51,6 +51,18 @@
             letter-spacing: 1px;
         }
 
+        .remove-button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         table {
             margin: 20px auto;
             border-collapse: collapse;
@@ -88,6 +100,7 @@
         <thead>
             <th>Number</th>
             <th>Timestamp</th>
+            <th></th> <!-- Added column for actions -->
         </thead>
     </table>
     <p>Add a new number:</p>
@@ -102,7 +115,9 @@
     <script>
         var values = [];
         var expected_time;
+        var my_number;
         document.querySelector('input[id="button"]').addEventListener('click', function () {
+            my_number = parseInt(document.querySelector('input[id="my_number"]').value);
             addNumber();
         });
 
@@ -124,25 +139,8 @@
             numberInput.value = number - 1;
         });
 
-        function addNumber() {
-            var my_number = parseInt(document.querySelector('input[id="my_number"]').value);
-            var number = parseInt(document.querySelector('input[id="number"]').value);
-            // get current timestamp as a Date object 
-            var current_timestamp = new Date();
-            values.push([number, current_timestamp]);
-            var table = document.querySelector('table[id="table"]');
-            // delete each table row
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
-            // rebuild the table
-            for (var i = 0; i < values.length; i++) {
-                var row = table.insertRow(i + 1);
-                row.insertCell(0).innerHTML = values[i][0];
-                // print only the left padded hour, minutes and seconds
-                row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
-            }
-            // compute the expected time when my_number will appear with a linear regression
+
+        function compute_lr() {
             var x = [];
             var y = [];
             for (var i = 0; i < values.length; i++) {
@@ -167,6 +165,28 @@
             }
         }
 
+        function addNumber() {
+            var number = parseInt(document.querySelector('input[id="number"]').value);
+            // get current timestamp as a Date object 
+            var current_timestamp = new Date();
+            values.push([number, current_timestamp]);
+            var table = document.querySelector('table[id="table"]');
+            // delete each table row
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // rebuild the table
+            for (var i = 0; i < values.length; i++) {
+                var row = table.insertRow(i + 1);
+                row.insertCell(0).innerHTML = values[i][0];
+                // print only the left padded hour, minutes and seconds
+                row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
+                row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">x</button>'; // Added remove button
+            }
+            // compute the expected time when my_number will appear with a linear regression
+            compute_lr();
+        }
+
         // update the remaining time every second
         setInterval(function () {
             var current_time = new Date();
@@ -180,6 +200,24 @@
                 document.querySelector('span[id="remaining_time"]').innerHTML = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
             }
         }, 1000);
+
+        function removeRow(index) {
+            values.splice(index, 1);
+            var table = document.querySelector('table[id="table"]');
+            // delete each table row
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // rebuild the table
+            for (var i = 0; i < values.length; i++) {
+                var row = table.insertRow(i + 1);
+                row.insertCell(0).innerHTML = values[i][0];
+                // print only the left padded hour, minutes and seconds
+                row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
+                row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">x</button>'; // Added remove button
+            }
+            compute_lr();
+        }
     </script>
 </body>
 
