@@ -89,7 +89,12 @@
         </thead>
     </table>
     <p>Add a new number:</p>
-    <p>Number: <input id="number" type="text" size="3"> <input id="button" type="button" value="Add"></p>
+    <p>Number: 
+        <input id="minus_button" type="button" value="-">
+        <input id="number" type="text" size="3">
+        <input id="plus_button" type="button" value="+">
+        <input id="button" type="button" value="Add">
+    </p>
     <p>Expected arrival time: <span id="time"></span></p>
     <p>Remaining time: <span id="remaining_time"></span></p>
     <script>
@@ -103,6 +108,18 @@
             if (event.key === "Enter") {
                 addNumber();
             }
+        });
+
+        document.querySelector('input[id="plus_button"]').addEventListener('click', function () {
+            var numberInput = document.querySelector('input[id="number"]');
+            var number = parseInt(numberInput.value);
+            numberInput.value = number + 1;
+        });
+
+        document.querySelector('input[id="minus_button"]').addEventListener('click', function () {
+            var numberInput = document.querySelector('input[id="number"]');
+            var number = parseInt(numberInput.value);
+            numberInput.value = number - 1;
         });
 
         function addNumber() {
