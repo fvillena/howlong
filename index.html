@@ -184,8 +184,24 @@
             var number = parseInt(document.querySelector('input[id="number"]').value);
             // get current timestamp as a Date object 
             var current_timestamp = new Date();
-            values.push([number, current_timestamp]);
+            // if the number exists, update the timestamp
+            var value_exists = false;
+            for (var i = 0; i < values.length; i++) {
+                if (values[i][0] === number) {
+                    values[i][1] = current_timestamp;
+                    value_exists = true;
+                }
+            }
+            if (!value_exists) {
+                values.push([number, current_timestamp]);
+            }
             var table = document.querySelector('table[id="table"]');
+            // increment the input id number by 1
+            document.querySelector('input[id="number"]').value = number + 1;
+            // sort values array by number
+            values.sort(function (a, b) {
+                return a[0] - b[0];
+            });
             rebuild_table();
             // compute the expected time when my_number will appear with a linear regression
             compute_lr();
