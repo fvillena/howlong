@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate how long you need to wait in line.">
+    <meta name="keywords" content="wait time, line, queue, calculate">
+    <title>How Long?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 36px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p {
+            color: #666;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="button"] {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #time {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>How Long?</h1>
+    <p>How long do I need to wait in line?</p>
+    <p>The number I have: <input id="my_number" type="text" size="3"></p>
+    <table id="table">
+        <thead>
+            <th>Number</th>
+            <th>Timestamp</th>
+        </thead>
+    </table>
+    <p>Add a new number:</p>
+    <p>Number: <input id="number" type="text" size="3"> <input id="button" type="button" value="Add"></p>
+    <p>Expected arrival time: <span id="time"></span></p>
+    <p>Remaining time: <span id="remaining_time"></span></p>
+    <script>
+        var values = [];
+        var expected_time;
+        document.querySelector('input[id="button"]').addEventListener('click', function () {
+            var my_number = parseInt(document.querySelector('input[id="my_number"]').value);
+            var number = parseInt(document.querySelector('input[id="number"]').value);
+            // get current timestamp as a Date object 
+            var current_timestamp = new Date();
+            values.push([number, current_timestamp]);
+            var table = document.querySelector('table[id="table"]');
+            // delete each table row
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // rebuild the table
+            for (var i = 0; i < values.length; i++) {
+                var row = table.insertRow(i + 1);
+                row.insertCell(0).innerHTML = values[i][0];
+                // print only the left padded hour, minutes and seconds
+                row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
+            }
+            // compute the expected time when my_number will appear with a linear regression
+            var x = [];
+            var y = [];
+            for (var i = 0; i < values.length; i++) {
+                x.push(values[i][0]);
+                y.push(values[i][1].getTime());
+            }
+            x_mean = x.reduce((a, b) => a + b, 0) / x.length;
+            y_mean = y.reduce((a, b) => a + b, 0) / y.length;
+            n = x.length;
+            numerator = 0;
+            denominator = 0;
+            for (var i = 0; i < n; i++) {
+                numerator += (x[i] - x_mean) * (y[i] - y_mean);
+                denominator += (x[i] - x_mean) ** 2;
+            }
+            m = numerator / denominator;
+            b = y_mean - m * x_mean;
+            expected_time = new Date(m * my_number + b);
+            // update only if it is not a NaN
+            if (!isNaN(expected_time)) {
+                document.querySelector('span[id="time"]').innerHTML = expected_time.getHours().toString().padStart(2, '0') + ':' + expected_time.getMinutes().toString().padStart(2, '0') + ':' + expected_time.getSeconds().toString().padStart(2, '0');
+            }
+
+        });
+        // update the remaining time every second
+        setInterval(function () {
+            var current_time = new Date();
+            var remaining_time = expected_time - current_time;
+            if (remaining_time > 0) {
+                var hours = Math.floor(remaining_time / 1000 / 60 / 60);
+                remaining_time -= hours * 1000 * 60 * 60;
+                var minutes = Math.floor(remaining_time / 1000 / 60);
+                remaining_time -= minutes * 1000 * 60;
+                var seconds = Math.floor(remaining_time / 1000);
+                document.querySelector('span[id="remaining_time"]').innerHTML = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+            }
+        }, 1000);
+
+    </script>
+</body>
+
+</html>
