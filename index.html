@@ -165,12 +165,7 @@
             }
         }
 
-        function addNumber() {
-            var number = parseInt(document.querySelector('input[id="number"]').value);
-            // get current timestamp as a Date object 
-            var current_timestamp = new Date();
-            values.push([number, current_timestamp]);
-            var table = document.querySelector('table[id="table"]');
+        function rebuild_table() {
             // delete each table row
             while (table.rows.length > 1) {
                 table.deleteRow(1);
@@ -183,6 +178,15 @@
                 row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
                 row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">x</button>'; // Added remove button
             }
+        }
+
+        function addNumber() {
+            var number = parseInt(document.querySelector('input[id="number"]').value);
+            // get current timestamp as a Date object 
+            var current_timestamp = new Date();
+            values.push([number, current_timestamp]);
+            var table = document.querySelector('table[id="table"]');
+            rebuild_table();
             // compute the expected time when my_number will appear with a linear regression
             compute_lr();
         }
@@ -204,18 +208,7 @@
         function removeRow(index) {
             values.splice(index, 1);
             var table = document.querySelector('table[id="table"]');
-            // delete each table row
-            while (table.rows.length > 1) {
-                table.deleteRow(1);
-            }
-            // rebuild the table
-            for (var i = 0; i < values.length; i++) {
-                var row = table.insertRow(i + 1);
-                row.insertCell(0).innerHTML = values[i][0];
-                // print only the left padded hour, minutes and seconds
-                row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
-                row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">x</button>'; // Added remove button
-            }
+            rebuild_table();
             compute_lr();
         }
     </script>
