@@ -76,6 +76,10 @@
             font-weight: bold;
             color: #333;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -96,8 +100,8 @@
         <input id="plus_button" type="button" value="+">
         <input id="button" type="button" value="Add">
     </p>
-    <p>Expected arrival time: <span id="time"></span></p>
-    <p>Remaining time: <span id="remaining_time"></span></p>
+    <p class="hidden">Expected arrival time: <span id="time"></span></p>
+    <p class="hidden">Remaining time: <span id="remaining_time"></span></p>
     <script>
         var values = [];
         var expected_time;
@@ -163,6 +167,11 @@
             // update only if it is not a NaN
             if (!isNaN(expected_time)) {
                 document.querySelector('span[id="time"]').innerHTML = expected_time.getHours().toString().padStart(2, '0') + ':' + expected_time.getMinutes().toString().padStart(2, '0') + ':' + expected_time.getSeconds().toString().padStart(2, '0');
+                if (document.querySelector('p[class="hidden"]')) {
+                    document.querySelector('p[class="hidden"]').classList.remove('hidden');
+                }
+            } else {
+                document.querySelector('p[class="hidden"]').classList.add('hidden');
             }
         }
 
@@ -177,6 +186,11 @@
                 remaining_time -= minutes * 1000 * 60;
                 var seconds = Math.floor(remaining_time / 1000);
                 document.querySelector('span[id="remaining_time"]').innerHTML = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+                if (document.querySelector('p[class="hidden"]')) {
+                    document.querySelector('p[class="hidden"]').classList.remove('hidden');
+                }
+            } else {
+                document.querySelector('p[class="hidden"]').classList.add('hidden');
             }
         }, 1000);
 
