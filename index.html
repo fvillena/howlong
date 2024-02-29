@@ -35,7 +35,8 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
-            text-align: center; /* Added property */
+            text-align: center;
+            /* Added property */
         }
 
         input[type="button"] {
@@ -82,7 +83,7 @@
 <body>
     <h1>How Long?</h1>
     <p>How long do I need to wait in line?</p>
-    <p>The number I have: <input id="my_number" type="text" size="3"></p>
+    <p>The number I have: <input id="my_number" type="text" size="3" pattern="[0-9]*" inputmode="numeric"></p>
     <table id="table">
         <thead>
             <th>Number</th>
@@ -90,9 +91,9 @@
         </thead>
     </table>
     <p>Add a new number:</p>
-    <p>Number: 
+    <p>Number:
         <input id="minus_button" type="button" value="-">
-        <input id="number" type="text" size="3">
+        <input id="number" type="text" size="3" pattern="[0-9]*" inputmode="numeric">
         <input id="plus_button" type="button" value="+">
         <input id="button" type="button" value="Add">
     </p>
@@ -179,11 +180,6 @@
                 document.querySelector('span[id="remaining_time"]').innerHTML = hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
             }
         }, 1000);
-
-        // Show numbers keyboard on mobile
-        var numberInput = document.querySelector('input');
-        numberInput.setAttribute('pattern', '[0-9]*');
-        numberInput.setAttribute('inputmode', 'numeric');
     </script>
 </body>
 
