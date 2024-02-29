@@ -96,6 +96,16 @@
         var values = [];
         var expected_time;
         document.querySelector('input[id="button"]').addEventListener('click', function () {
+            addNumber();
+        });
+
+        document.querySelector('input[id="number"]').addEventListener('keydown', function (event) {
+            if (event.key === "Enter") {
+                addNumber();
+            }
+        });
+
+        function addNumber() {
             var my_number = parseInt(document.querySelector('input[id="my_number"]').value);
             var number = parseInt(document.querySelector('input[id="number"]').value);
             // get current timestamp as a Date object 
@@ -136,8 +146,8 @@
             if (!isNaN(expected_time)) {
                 document.querySelector('span[id="time"]').innerHTML = expected_time.getHours().toString().padStart(2, '0') + ':' + expected_time.getMinutes().toString().padStart(2, '0') + ':' + expected_time.getSeconds().toString().padStart(2, '0');
             }
+        }
 
-        });
         // update the remaining time every second
         setInterval(function () {
             var current_time = new Date();
