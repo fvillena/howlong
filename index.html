@@ -180,6 +180,10 @@
             }
         }, 1000);
 
+        // Show numbers keyboard on mobile
+        var numberInput = document.querySelector('input');
+        numberInput.setAttribute('pattern', '[0-9]*');
+        numberInput.setAttribute('inputmode', 'numeric');
     </script>
 </body>
 
