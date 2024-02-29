@@ -176,7 +176,7 @@
                 row.insertCell(0).innerHTML = values[i][0];
                 // print only the left padded hour, minutes and seconds
                 row.insertCell(1).innerHTML = values[i][1].getHours().toString().padStart(2, '0') + ':' + values[i][1].getMinutes().toString().padStart(2, '0') + ':' + values[i][1].getSeconds().toString().padStart(2, '0');
-                row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">x</button>'; // Added remove button
+                row.insertCell(2).innerHTML = '<button onclick="removeRow(' + i + ')" class="remove-button">&#10006;</button>'; // Added remove button
             }
         }
 
